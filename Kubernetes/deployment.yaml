@@ -1,0 +1,44 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: mymobi-users
+  name: mymobi-users-deployment
+  namespace: mobiconnect
+spec:
+  selector:
+    matchLabels:
+      app: mymobi-total-users
+  replicas: 1
+  minReadySeconds: 15
+  template:
+    metadata:
+      labels:
+        app: mymobi-total-users
+    spec:
+      containers:
+        - name: mymobi-total-users
+          image: ImageName
+          ports:
+            - containerPort: 8888
+          imagePullPolicy: IfNotPresent
+
+---          
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: mymobi-users-service
+  namespace: mobiconnect
+  labels:
+    run: mymobi-total-users-service
+spec:
+  type: NodePort
+  ports:
+    - name: mymobi-total-users-port
+      port: 8888
+      protocol: TCP
+      nodePort: 30562
+  selector:
+    app: mymobi-total-users
