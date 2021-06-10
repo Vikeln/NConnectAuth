@@ -244,7 +244,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String createKeycloakUserCorrelator() {
+    public String createUpdateUsers() {
         UUID uuid = UUID.randomUUID();
         return uuid.toString();
     }
@@ -253,8 +253,9 @@ public class UserServiceImpl implements UserService {
         return userDao.findByEmailAndUserName(email, userName);
     }
 
+
     @Override
-    public AppResponseModel createKeycloakUserCorrelator(String tenantKey, UserDto userDto, Integer userType) {
+    public AppResponseModel createUpdateUsers(String tenantKey, UserDto userDto, Integer userType) {
 
         AppResponseModel appResponseModel = new AppResponseModel();
         Object verify = verifyRequestAppKey(tenantKey, tenantDao);
@@ -292,12 +293,16 @@ public class UserServiceImpl implements UserService {
                 Optional<User> optionalUser = Optional.empty();
                 if (userDto.getId() != null) {
                     optionalUser = userDao.findById(userDto.getId());
+                    if (optionalUser.isPresent())
+                        user.setUserType(optionalUser.get().getUserType());
                 }
 
                 user.setSuperUser(false);
                 if (userDto.getId() != null) {
                     user.setId(userDto.getId());
                 }
+
+
                 user.setRole(optionalRole.get());
                 user.setTenant(tenant1);
                 user.setOtherName(userDto.getOtherName());
@@ -317,6 +322,9 @@ public class UserServiceImpl implements UserService {
                 Optional<Account> userAccount = accountDao.findDistinctByUserId(user);
                 if (!userAccount.isPresent()) {
                     createUserAccount(user, userDto.getUserPermissions(), userDto.getUserName());
+                }else{
+                    userAccount.get().setPermissions(permissionDao.findAllByNameIn(userDto.getUserPermissions()));
+                    accountDao.save(userAccount.get());
                 }
 
                 String object = mapper.writeValueAsString(user);

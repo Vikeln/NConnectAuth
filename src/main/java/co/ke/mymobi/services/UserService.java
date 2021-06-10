@@ -19,9 +19,9 @@ public interface UserService {
 
     public AppResponseModel findOne(String tenant, Integer userId);
 
-    public String createKeycloakUserCorrelator();
+    public String createUpdateUsers();
 
-    AppResponseModel createKeycloakUserCorrelator(String key, UserDto userDto, Integer userType);
+    AppResponseModel createUpdateUsers(String key, UserDto userDto, Integer userType);
 
     public AppResponseModel unlockUserAccount(Integer userId);
 

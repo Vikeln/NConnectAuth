@@ -18,9 +18,10 @@ public class AuditorAwareImpl implements AuditorAware<String> {
     @Override
     public Optional<String> getCurrentAuditor() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !authentication.isAuthenticated()) {
+        if (authentication == null || !authentication.isAuthenticated() || authentication.getPrincipal() instanceof String) {
             return Optional.of("Application Root");
         }
+
         AccountModel principal = ((ApiPrincipal) authentication.getPrincipal()).getUser();
         String currentPrincipalName = principal.getAccount().getUsername();
         return Optional.of(currentPrincipalName);

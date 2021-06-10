@@ -80,7 +80,7 @@ public class TenantServiceImpl implements TenantService {
                         adminRole.setPermissions(permissionDao.findAllByNameIn(role.getPermissions()));
                         adminRole = roleDao.saveAndFlush(adminRole);
 
-                        AppResponseModel createdUser = userService.createKeycloakUserCorrelator(tenant.getAppKey(), UserDto.transform(tenantDTo, adminRole.getId(),adminRole.getPermissions()),1);
+                        AppResponseModel createdUser = userService.createUpdateUsers(tenant.getAppKey(), UserDto.transform(tenantDTo, adminRole.getId(),adminRole.getPermissions()),1);
                         logger.info("createdUser  {}", Utilities.toJson(createdUser));
                         user = (User) createdUser.getData();
                         if (createdUser.isStatus()) {

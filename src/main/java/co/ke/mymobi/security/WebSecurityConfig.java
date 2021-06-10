@@ -74,8 +74,7 @@ import org.springframework.web.cors.CorsConfiguration;
                 .authorizeRequests()
                 // allow  POST requests for /auth
                 .antMatchers(HttpMethod.POST, jwtConfig.getUri()).permitAll()
-                .antMatchers(HttpMethod.PUT, "/users/reset/password").permitAll()
-                .antMatchers("/users/create","/tenants/create-tenant/**","/privileges","/users/user-types").permitAll()
+                .antMatchers("/users/create","/accounts/resetpassword","/accounts/forgotpassword","/tenants/create-tenant/**","/privileges","/users/user-types").permitAll()
                 .antMatchers("/v2/api-docs","/spring-security-rest/**", "/configuration/ui", "/swagger-resources/",
                         "/swagger-resources", "/swagger-resources/configuration/**", "/swagger-ui.html", "/context/swagger-ui.html", "/webjars/**", "/actuator/").permitAll()
                 .anyRequest().authenticated();

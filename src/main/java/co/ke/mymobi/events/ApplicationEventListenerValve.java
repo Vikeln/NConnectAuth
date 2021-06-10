@@ -1,6 +1,5 @@
 package co.ke.mymobi.events;
 
-import co.ke.mymobi.entities.Account;
 import co.ke.mymobi.entities.User;
 import co.ke.mymobi.models.Mail;
 import co.ke.mymobi.repositories.AccountDao;
@@ -16,10 +15,8 @@ import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 
 @Component
@@ -57,7 +54,7 @@ public class ApplicationEventListenerValve {
         String userId = null;
         User u = null;
         if (user.getCorrelator() == null) {
-            userId = userService.createKeycloakUserCorrelator();
+            userId = userService.createUpdateUsers();
 
             if (userId != null) {
                 u = updateUserCorrelator(user, userId);

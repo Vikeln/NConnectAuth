@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ResetPassword {
+public class            ResetPassword {
     private String userID;
     private String password;
     private Boolean verifyEmail = false;

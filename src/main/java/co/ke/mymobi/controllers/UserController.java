@@ -5,7 +5,6 @@ import co.ke.mymobi.models.AppResponseModel;
 import co.ke.mymobi.models.UserDto;
 import co.ke.mymobi.repositories.UserTypeDao;
 import co.ke.mymobi.services.UserService;
-import co.ke.mymobi.utils.Response;
 import co.ke.mymobi.utils.Utilities;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,13 +49,13 @@ public class UserController {
     @PostMapping(path = "/create")
     @RolesAllowed("CAN_CREATE_USERS")
     public ResponseEntity<AppResponseModel> createUser(@RequestBody UserDto userDTO, HttpServletRequest request) {
-        return ResponseEntity.ok(userService.createKeycloakUserCorrelator(Utilities.getRequestAppKey(request), userDTO,2));
+        return ResponseEntity.ok(userService.createUpdateUsers(Utilities.getRequestAppKey(request), userDTO,2));
     }
 
     @PostMapping(path = "/admin/create")
     @RolesAllowed("CAN_CREATE_USERS")
     public ResponseEntity<AppResponseModel> createAdminUser(@RequestBody UserDto userDTO, HttpServletRequest request) {
-        return ResponseEntity.ok(userService.createKeycloakUserCorrelator(Utilities.getRequestAppKey(request), userDTO,1));
+        return ResponseEntity.ok(userService.createUpdateUsers(Utilities.getRequestAppKey(request), userDTO,1));
     }
 
 
@@ -69,7 +68,7 @@ public class UserController {
             appResponseModel.setStatus(false);
             return ResponseEntity.ok(appResponseModel);
         }
-        return ResponseEntity.ok(userService.createKeycloakUserCorrelator(Utilities.getRequestAppKey(request), userDTO, null));
+        return ResponseEntity.ok(userService.createUpdateUsers(Utilities.getRequestAppKey(request), userDTO, null));
     }
 
 
