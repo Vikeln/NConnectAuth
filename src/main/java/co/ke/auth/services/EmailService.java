@@ -42,7 +42,7 @@ public class EmailService {
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED, StandardCharsets.UTF_8.name());
-            helper.addAttachment("logo.jpg", new ClassPathResource("/static/assets/users/banner.png"));
+            helper.addAttachment("logo.png", new ClassPathResource("/static/assets/users/logo.png"));
             helper.addAttachment("seperator.png", new ClassPathResource("/static/assets/users/seperator.png"));
             helper.setFrom(emailFrom);
             helper.setTo(mail.getTo());

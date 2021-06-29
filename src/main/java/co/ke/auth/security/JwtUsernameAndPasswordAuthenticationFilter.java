@@ -94,7 +94,7 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
 
         AccountModel principal = ((UserPrincipal) auth.getPrincipal()).getUser();
 
-        log.error("SUCCESS: {}", principal);
+        log.error("SUCCESS AUTH: {}", principal.getAccount().getUsername());
 
         HashMap<String, Object> data = new HashMap<>();
         data.put("user", principal);
