@@ -14,10 +14,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @EnableJpaAuditing(auditorAwareRef = "auditorAware")
 @SpringBootApplication
-public class UserApplication {
+public class CheeksManager {
 
     public static void main(String[] args) {
-        SpringApplication.run(UserApplication.class, args);
+        SpringApplication.run(CheeksManager.class, args);
     }
 
     @Bean

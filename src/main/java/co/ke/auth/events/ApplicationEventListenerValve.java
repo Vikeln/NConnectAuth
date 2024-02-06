@@ -1,6 +1,7 @@
 package co.ke.auth.events;
 
 import co.ke.auth.entities.User;
+import co.ke.auth.integrations.communication.CommunicationService;
 import co.ke.auth.models.Mail;
 import co.ke.auth.repositories.AccountDao;
 import co.ke.auth.repositories.UserDao;
@@ -37,12 +38,16 @@ public class ApplicationEventListenerValve {
     @Autowired
     private AccountDao accountDao;
 
+    @Autowired
+    private CommunicationService communicationService;
+
     private Logger logger = LoggerFactory.getLogger(ApplicationEventListenerValve.class);
 
     @Async
     @EventListener
     public void handleUserPasswordResetEvent(UserPasswordResetEvent event) {
-        sendPasswordMail(event.getUser(), "Password Reset", "Your Password has been Reset  on Admin Dashboard", event.getTenantName());
+        sendPasswordMail(event.getUser(), "Password Reset", "Your Password has been Reset  on Admin Dashboard",
+                event.getTenantName(), event.getTenantAdminPanel());
     }
 
 
@@ -67,7 +72,7 @@ public class ApplicationEventListenerValve {
             u = user;
         }
         sendPasswordMail(u, event.getTenantName() + " Account", "Your user account has been setup. Please verify by clicking the link below. You will be required to set your password. Once done, log in with your username :  " +
-                u.getUserName() + " and your new password", u.getTenant().getName());
+                u.getUserName() + " and your new password", u.getTenant().getName(), u.getTenant().getClientBaseUrl());
 
     }
 
@@ -79,17 +84,20 @@ public class ApplicationEventListenerValve {
     }
 
 
-    private void sendPasswordMail(User user, String subject, String message, String tenant) {
-        Mail mail = new Mail();
-        mail.setTo(user.getEmail());
-        mail.setSubject(subject);
-        Map<String, Object> map = new HashMap<>();
-        map.put("token", (user.getTenant().getClientBaseUrl() != null ? (user.getTenant().getClientBaseUrl() + "/") : (adminPanel + "/auth/resetpassword/")) + user.getCorrelator());
-        map.put("name", user.getFirstName());
-        map.put("message", message);
-        map.put("signature", tenant + " Admin");
-        mail.setModel(map);
-        emailService.sendSimpleMessage(mail);
-    }
+    private void sendPasswordMail(User user, String subject, String message, String tenant, String clientBAseUrl) {
+            Mail mail = new Mail();
+            mail.setTo(user.getEmail());
+            mail.setSubject(subject);
+            mail.setFrom("nouveta.tech@outlook.com");
+            Map<String, Object> map = new HashMap<>();
+            map.put("token", (clientBAseUrl != null ? (clientBAseUrl + "/") : (adminPanel + "/auth/resetpassword/")) + user.getCorrelator());
+            map.put("name", user.getFirstName());
+            map.put("message", message);
+            map.put("signature", tenant + " Admin");
+            mail.setModel(map);
+            mail.setTemplateName("mail/sign-up-template");
+            mail.setPortalName(tenant.concat(" ADMIN PORTAL"));
+            communicationService.sendEmailData(mail, user.getId(),"CHEEKS_USER", user.getCreatedBy(), user.getTenant().getId());
+        }
 
 }

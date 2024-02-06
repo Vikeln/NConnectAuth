@@ -44,7 +44,7 @@ public class SwaggerConfig {
 
 
     return new Docket(DocumentationType.SWAGGER_2).select()
-            .apis(RequestHandlerSelectors.basePackage("co.ke.mymobi"))
+            .apis(RequestHandlerSelectors.basePackage("co.ke.auth"))
             .paths(PathSelectors.any())
             .build().apiInfo(apiEndPointsInfo())
             .securitySchemes(apiKey())
@@ -53,8 +53,8 @@ public class SwaggerConfig {
 
   private ApiInfo apiEndPointsInfo() {
 
-    return new ApiInfoBuilder().title("AUTH SERVICE REST API").description("AUTH SERVICE REST API.")
-            .license("TRENDY 2021")
+    return new ApiInfoBuilder().title("CHEEKS SERVICE REST API").description("CHEEKS SERVICE REST API.")
+            .license("CHEEKS 2021")
             .version("2.0.0")
             .build();
 

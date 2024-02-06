@@ -5,7 +5,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 
 @SpringBootTest
-public class UserApplicationTests {
+public class CheeksManagerTests {
 
 	@Test
 	public void contextLoads() {

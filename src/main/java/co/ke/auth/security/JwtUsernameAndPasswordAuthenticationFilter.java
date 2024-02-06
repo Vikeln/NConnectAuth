@@ -106,7 +106,7 @@ public class JwtUsernameAndPasswordAuthenticationFilter extends UsernamePassword
                 .setClaims(data)
                 .setIssuedAt(new Date(now))
                 .setExpiration(exp)  // in milliseconds
-                .signWith(SignatureAlgorithm.RS512, Utilities.getPrivateKey(jwtConfig.getFilePath() + "/private.der"))
+                .signWith(SignatureAlgorithm.RS512, Utilities.getPrivateKey(jwtConfig.getFilePath() + "private.der"))
                 .compact();
 
         TokenResponse tokenResponse = new TokenResponse(token, exp);

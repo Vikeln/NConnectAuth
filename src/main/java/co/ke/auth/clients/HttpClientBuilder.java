@@ -1,13 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package co.ke.auth.clients;
 
 
-import co.ke.auth.utils.Utilities;
-import co.ke.auth.models.AppResponseModel;
 import co.ke.auth.utils.RequestResponseLoggingInterceptor;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -26,18 +19,17 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.net.URI;
 import java.util.Collections;
 
-/**
- * @param <T>
- * @author emutanda
- */
+import static co.ke.auth.utils.Utilities.ERROR_LOG_FORMAT;
+
+
 @Service
 public class HttpClientBuilder<T extends Object> {
     private Logger logger = LoggerFactory.getLogger(HttpClientBuilder.class);
 
-    @Value("${mobiloan.client.timeout}")
+    @Value("${client.timeout}")
     private Integer timeout = 30000;
 
-    private AppResponseModel responseModel;
+    private ResponseModel responseModel;
 
     public ClientHttpRequestFactory getClientHttpRequestFactory() {
         HttpComponentsClientHttpRequestFactory clientHttpRequestFactory = new HttpComponentsClientHttpRequestFactory();
@@ -57,14 +49,14 @@ public class HttpClientBuilder<T extends Object> {
             }
             HttpEntity<T> entity = new HttpEntity<>(token, headers);
             RestTemplate template = new RestTemplate(getClientHttpRequestFactory());
-            logger.info("requestURL={} requestHeaders={} requestBody={}", urlb, entity.getHeaders(), Utilities.mapper().writeValueAsString(token));
+            logger.info("requestURL={} ", urlb);
             template.setInterceptors(Collections.singletonList(new RequestResponseLoggingInterceptor()));
             return template.exchange(urlb, method, entity, responseType);
         } catch (HttpClientErrorException ex) {
             logger.error("HttpClientErrorException=[statusCode={} responseBody={}]", ex.getRawStatusCode(), ex.getResponseBodyAsString());
             return errorResponseBuilder(ex.getStatusCode(), ex);
         } catch (Exception ex) {
-            logger.error(Utilities.ERROR_LOG_FORMAT, ex.getMessage());
+            logger.error(ERROR_LOG_FORMAT, ex.getMessage());
             return errorResponseBuilder(HttpStatus.INTERNAL_SERVER_ERROR, ex);
         }
     }
@@ -80,7 +72,7 @@ public class HttpClientBuilder<T extends Object> {
             HttpEntity<Object> entity = new HttpEntity<>(HttpEntity.EMPTY, headers);
             RestTemplate template = new RestTemplate(getClientHttpRequestFactory());
             template.setInterceptors(Collections.singletonList(new RequestResponseLoggingInterceptor()));
-            logger.info("requestUrl={} requestHeaders={} request={}", finalURL, entity.getHeaders(), entity.getBody());
+            logger.info("requestUrl={} request={}", finalURL, entity.getBody());
             ResponseEntity<?> responseEntity = template.exchange(finalURL, HttpMethod.GET, entity, responseType);
             logger.info("responseHeader={} statusCode={}", responseEntity.getHeaders(), responseEntity.getStatusCode());
             return responseEntity;
@@ -94,7 +86,7 @@ public class HttpClientBuilder<T extends Object> {
     }
 
     private ResponseEntity errorResponseBuilder(HttpStatus httpStatus, Exception ex) {
-        responseModel = new AppResponseModel(false);
+        responseModel = new ResponseModel(false);
         responseModel.setHttpStatus(httpStatus);
         if (ex instanceof HttpClientErrorException) {
             try {
@@ -112,11 +104,11 @@ public class HttpClientBuilder<T extends Object> {
                 logger.error("error={}", e.getMessage());
                 responseModel.setMessage(((HttpClientErrorException) ex).getResponseBodyAsString());
             }
-        }else {
+        } else {
             responseModel.setMessage(ex.getMessage());
         }
 
-        return new ResponseEntity(responseModel, httpStatus);
+        return new ResponseEntity<>(responseModel, responseModel.getHttpStatus());
     }
 
     public UriComponents getUriComponent(String resourceURL, MultiValueMap<String, String> requestParams, String... pathUrl) {
